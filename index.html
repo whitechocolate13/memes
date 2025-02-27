@@ -70,6 +70,13 @@
     </style>
 </head>
 <body>
+    <label for="category">Выбери категорию:</label>
+<select id="category">
+    <option value="all">Все</option>
+    <option value="animals">Животные</option>
+    <option value="movies">Фильмы</option>
+    <option value="people">Люди</option>
+</select>
     <header>
         <h1>Random Memes</h1>
     </header>
@@ -139,6 +146,24 @@
             getMeme();
             displayFavorites();
         };
+        document.getElementById("category").addEventListener("change", filterMemes);
+
+function filterMemes() {
+    let selectedCategory = document.getElementById("category").value;
+    
+    fetch("https://api.imgflip.com/get_memes")
+        .then(response => response.json())
+        .then(data => {
+            let memes = data.data.memes;
+            let filteredMemes = memes.filter(meme => {
+                if (selectedCategory === "all") return true;
+                return meme.name.toLowerCase().includes(selectedCategory);
+            });
+
+            displayMemes(filteredMemes);
+        })
+        .catch(error => console.error("Ошибка загрузки мемов:", error));
+}
     </script>
 </body>
 </html>
